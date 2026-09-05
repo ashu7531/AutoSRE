@@ -1,6 +1,6 @@
 # 🧠 AutoSRE: System Architecture & Workflow Walkthrough
 
-This document explains the end-to-end architecture of **AutoSRE**, an autonomous Site Reliability Engineering (SRE) agent. It is written as a "story" so you can easily explain the workflow to an interviewer or colleague.
+This document explains the end-to-end architecture of **AutoSRE**, an autonomous Site Reliability Engineering (SRE) agent. It outlines the complete workflow from incident detection to autonomous root cause analysis.
 
 ---
 
@@ -60,7 +60,7 @@ Now, if this exact same crash happens again 6 months from now, the Agent will re
 
 ## 🛠️ Core Features & Capabilities
 
-If an interviewer asks you what features you built into this platform, highlight these:
+The following architectural decisions enable the autonomous capabilities of the platform:
 
 1. **Event-Driven Auto-Triggering:** The platform doesn't require humans to start investigations. It is fully integrated with enterprise observability tools (Sentry) via webhooks to trigger RCAs the millisecond a crash occurs.
 2. **Model Context Protocol (MCP) Architecture:** The AI is strictly decoupled from the infrastructure APIs. It negotiates access to internal tools (GitHub, Sentry, Metrics) dynamically using standard MCP schemas.
