@@ -48,6 +48,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         }
       },
       {
+        name: "fetch_sentry_issues",
+        description: "Fetch real, live unhandled exceptions directly from the production Sentry project.",
+        inputSchema: {
+          type: "object",
+          properties: {}
+        }
+      },
+      {
         name: "get_recent_commits",
         description: "Fetch recent GitHub commits for a repository.",
         inputSchema: {
@@ -92,6 +100,49 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [{ type: "text", text: JSON.stringify(scenario.logs || []) }]
     };
+  }
+
+  if (request.params.name === "fetch_sentry_issues") {
+    try {
+      const token = process.env.SENTRY_AUTH_TOKEN;
+      if (!token) {
+        return { content: [{ type: "text", text: "Error: SENTRY_AUTH_TOKEN not found in .env" }] };
+      }
+
+      // Hardcoded to the user's actual live Sentry project
+      const orgSlug = "test-xml";
+      const projectSlug = "agentic-workflow-compiler";
+
+      const response = await fetch(`https://sentry.io/api/0/projects/${orgSlug}/${projectSlug}/issues/`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (!response.ok) {
+        return { content: [{ type: "text", text: `Sentry API Error: ${response.statusText}` }] };
+      }
+      
+      const issues = await response.json();
+      
+      // Format it so the LLM gets only the necessary crash data, not the massive raw JSON
+      const formattedIssues = issues.slice(0, 3).map((issue: any) => ({
+         id: issue.id,
+         title: issue.title,
+         culprit: issue.culprit,
+         lastSeen: issue.lastSeen,
+         count: issue.count,
+         permalink: issue.permalink,
+         metadata: issue.metadata
+      }));
+
+      return {
+        content: [{ type: "text", text: JSON.stringify(formattedIssues) }]
+      };
+    } catch (err: any) {
+      return { content: [{ type: "text", text: `Error fetching live Sentry issues: ${err.message}` }] };
+    }
   }
   
   if (request.params.name === "get_recent_commits") {
