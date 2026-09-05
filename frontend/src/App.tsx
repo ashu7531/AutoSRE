@@ -24,7 +24,7 @@ function App() {
   const terminalEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/scenarios')
+    fetch('https://autosre-backend.onrender.com/api/scenarios')
       .then(res => res.json())
       .then(data => {
         setScenarios(data);
@@ -42,7 +42,7 @@ function App() {
     setReport(null);
     setIsInvestigating(true);
 
-    const eventSource = new EventSource(`http://localhost:3000/api/trigger?scenario=${selectedScenario}`);
+    const eventSource = new EventSource(`https://autosre-backend.onrender.com/api/trigger?scenario=${selectedScenario}`);
     
     let idCounter = 0;
 

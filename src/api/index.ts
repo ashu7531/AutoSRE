@@ -3,6 +3,7 @@ import cors from "cors";
 import * as fs from "fs";
 import * as path from "path";
 import { runAgent } from "../agent/index.js";
+import { initMemoryDB } from "../agent/memory.js";
 
 const app = express();
 app.use(cors());
@@ -53,6 +54,9 @@ app.get("/api/trigger", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`AutoSRE Backend running on http://localhost:${PORT}`);
+// Initialize database then start server
+initMemoryDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`AutoSRE Backend running on http://localhost:${PORT}`);
+  });
 });
