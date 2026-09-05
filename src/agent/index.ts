@@ -82,7 +82,7 @@ export async function runAgent(sendEvent: (data: any) => void) {
   // 3. Parallel Evidence Collection (The core SRE pattern)
   // We already have metrics, so we only fetch logs, commits, and dependencies
   const [logs, commits, dependencies] = await Promise.all([
-    client.callTool({ name: "get_error_logs", arguments: { serviceName, timeRangeMins: 10 } }),
+    client.callTool({ name: "fetch_sentry_issues", arguments: {} }),
     client.callTool({ name: "get_recent_commits", arguments: { repoName: serviceName } }),
     client.callTool({ name: "get_dependency_health", arguments: { serviceName } })
   ]);
