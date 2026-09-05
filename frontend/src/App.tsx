@@ -37,6 +37,37 @@ function App() {
     terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs]);
 
+  // --- NEW: LIVE WEBHOOK LISTENER ---
+  useEffect(() => {
+    const liveStream = new EventSource('https://autosre-backend.onrender.com/api/stream');
+    let liveIdCounter = 1000; // start high so it doesn't collide with manual triggers
+
+    liveStream.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      // Auto-clear the UI if a new webhook alert comes in
+      if (data.message === "🔔 Webhook Alert Received from Sentry!") {
+        setLogs([]);
+        setReport(null);
+        setIsInvestigating(true);
+      }
+
+      if (data.type === 'report') {
+        setReport(data.message);
+      } else {
+        setLogs(prev => [...prev, { id: liveIdCounter++, type: data.type, message: data.message }]);
+      }
+
+      if (data.type === 'done' || data.type === 'error') {
+        setIsInvestigating(false);
+      }
+    };
+
+    return () => {
+      liveStream.close();
+    };
+  }, []);
+
   const startInvestigation = () => {
     setLogs([]);
     setReport(null);

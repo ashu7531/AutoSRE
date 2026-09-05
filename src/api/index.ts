@@ -11,6 +11,19 @@ app.use(express.json());
 
 const PORT = 3000;
 
+// Global list to hold connected browsers listening for live updates
+let sseClients: express.Response[] = [];
+
+app.get("/api/stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  sseClients.push(res);
+  req.on("close", () => {
+    sseClients = sseClients.filter(c => c !== res);
+  });
+});
+
 app.get("/api/scenarios", (req, res) => {
   const scenariosDir = path.join(__dirname, "../scenarios");
   const files = fs.readdirSync(scenariosDir).filter(f => f.endsWith(".json") && f !== "active.json");
@@ -58,18 +71,22 @@ app.get("/api/trigger", async (req, res) => {
 app.post("/api/webhook/sentry", async (req, res) => {
   console.log("🔔 Sentry Webhook Received! Auto-triggering RCA Pipeline...");
   
-  // Respond immediately so Sentry doesn't timeout
   res.status(202).json({ message: "Incident response triggered" });
 
-  // Run the agent in the background (no browser attached)
-  const dummySendEvent = (data: any) => {
+  // Broadcast the events to any browser that has the UI open!
+  const broadcastEvent = (data: any) => {
     console.log(`[AutoSRE background]: ${data.message}`);
+    sseClients.forEach(client => client.write(`data: ${JSON.stringify(data)}\n\n`));
   };
 
   try {
-    await runAgent(dummySendEvent);
-  } catch (err) {
+    broadcastEvent({ type: "info", message: "🔔 Webhook Alert Received from Sentry!" });
+    broadcastEvent({ type: "info", message: "Starting Autonomous Investigation..." });
+    await runAgent(broadcastEvent);
+    broadcastEvent({ type: "done", message: "Autonomous Investigation Complete." });
+  } catch (err: any) {
     console.error("AutoSRE background task failed:", err);
+    broadcastEvent({ type: "error", message: err.message || "An error occurred." });
   }
 });
 
