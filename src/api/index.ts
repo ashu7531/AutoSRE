@@ -3,7 +3,7 @@ import cors from "cors";
 import * as fs from "fs";
 import * as path from "path";
 import { runAgent } from "../agent/index.js";
-import { initMemoryDB } from "../agent/memory.js";
+import { initMemoryDB, getClient } from "../agent/memory.js";
 
 const app = express();
 app.use(cors());
@@ -51,6 +51,36 @@ app.get("/api/trigger", async (req, res) => {
     sendEvent({ type: "error", message: err.message || "An error occurred." });
   } finally {
     res.end();
+  }
+});
+
+// --- NEW: SENTRY WEBHOOK (Auto-Trigger) ---
+app.post("/api/webhook/sentry", async (req, res) => {
+  console.log("🔔 Sentry Webhook Received! Auto-triggering RCA Pipeline...");
+  
+  // Respond immediately so Sentry doesn't timeout
+  res.status(202).json({ message: "Incident response triggered" });
+
+  // Run the agent in the background (no browser attached)
+  const dummySendEvent = (data: any) => {
+    console.log(`[AutoSRE background]: ${data.message}`);
+  };
+
+  try {
+    await runAgent(dummySendEvent);
+  } catch (err) {
+    console.error("AutoSRE background task failed:", err);
+  }
+});
+
+// --- NEW: HISTORY ENDPOINT (To view auto-generated RCAs) ---
+app.get("/api/history", async (req, res) => {
+  try {
+    const client = getClient();
+    const result = await client.query('SELECT id, issue, resolution FROM incident_memory ORDER BY id DESC LIMIT 10');
+    res.json(result.rows);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 });
 

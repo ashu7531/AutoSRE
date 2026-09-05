@@ -47,6 +47,10 @@ export async function initMemoryDB() {
   }
 }
 
+export function getClient() {
+  return pool;
+}
+
 // Add a new incident to the database
 export async function addIncidentToMemory(id: string, issue: string, resolution: string) {
   const embedding = await getEmbedding(issue);
