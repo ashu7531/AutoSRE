@@ -1,0 +1,23 @@
+{
+  "scenario_name": "noisy_cron_job",
+  "description": "A daily database backup causes a CPU spike, which is normal behavior.",
+  "metrics": [
+    {
+      "metric": "cpu_usage",
+      "value": "99%",
+      "baseline": "40%",
+      "status": "WARNING",
+      "timestamp": "2026-09-04T02:00:00Z",
+      "historical_pattern": "Occurs daily at 02:00:00Z for 5 minutes"
+    }
+  ],
+  "commits": [],
+  "logs": [
+    {
+      "level": "INFO",
+      "message": "Starting daily pg_dump backup...",
+      "timestamp": "2026-09-04T02:00:01Z",
+      "count": 1
+    }
+  ]
+}

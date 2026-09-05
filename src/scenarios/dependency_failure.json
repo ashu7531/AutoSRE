@@ -1,0 +1,37 @@
+{
+  "scenario_name": "dependency_failure",
+  "description": "A deployment happens, but a crash occurs due to an external Stripe outage.",
+  "metrics": [
+    {
+      "metric": "error_rate",
+      "value": "25%",
+      "baseline": "0.1%",
+      "status": "CRITICAL",
+      "timestamp": "2026-09-04T15:05:00Z"
+    }
+  ],
+  "commits": [
+    {
+      "hash": "def5678",
+      "author": "ashutosh",
+      "message": "Change color of checkout button to blue",
+      "timestamp": "2026-09-04T15:00:00Z",
+      "diff": "- background: red;\n+ background: blue;"
+    }
+  ],
+  "logs": [
+    {
+      "level": "ERROR",
+      "message": "PaymentGatewayError: Stripe API returned 503 Service Unavailable",
+      "timestamp": "2026-09-04T15:05:00Z",
+      "count": 89
+    }
+  ],
+  "dependencies": [
+    {
+      "service": "Stripe API",
+      "status": "DOWN",
+      "incident_active": true
+    }
+  ]
+}

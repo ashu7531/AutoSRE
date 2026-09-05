@@ -1,0 +1,37 @@
+{
+  "scenario_name": "bad_deployment",
+  "description": "A developer changed the database connection string, causing 500 errors.",
+  "metrics": [
+    {
+      "metric": "error_rate",
+      "value": "42%",
+      "baseline": "0.1%",
+      "status": "CRITICAL",
+      "timestamp": "2026-09-04T10:05:00Z"
+    },
+    {
+      "metric": "p99_latency",
+      "value": "1200ms",
+      "baseline": "45ms",
+      "status": "HIGH",
+      "timestamp": "2026-09-04T10:05:00Z"
+    }
+  ],
+  "commits": [
+    {
+      "hash": "abc1234",
+      "author": "ashutosh",
+      "message": "Update DB connection port for new cluster",
+      "timestamp": "2026-09-04T10:02:00Z",
+      "diff": "- DB_PORT = 5432\n+ DB_PORT = 5433"
+    }
+  ],
+  "logs": [
+    {
+      "level": "ERROR",
+      "message": "ConnectionRefused: Failed to connect to database on port 5433",
+      "timestamp": "2026-09-04T10:06:00Z",
+      "count": 142
+    }
+  ]
+}

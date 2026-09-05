@@ -1,0 +1,16 @@
+# Secret Keys
+.env
+.env.local
+
+# Node
+node_modules/
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
