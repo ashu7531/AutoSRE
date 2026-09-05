@@ -110,10 +110,8 @@ export async function runAgent(sendEvent: (data: any) => void) {
     Analyze the following evidence collected from our infrastructure tools and determine the root cause of the incident.
     
     Evidence:
-    Metrics: ${JSON.stringify(metrics.content)}
-    Logs: ${JSON.stringify(logs.content)}
+    Sentry Crashes: ${JSON.stringify(logs.content)}
     Commits: ${JSON.stringify(commits.content)}
-    Dependencies: ${JSON.stringify(dependencies.content)}
     
     Past Incident Context (If any):
     ${pastIncident ? JSON.stringify(pastIncident) : "No similar past incidents."}
