@@ -71,7 +71,7 @@ app.get("/api/trigger", async (req, res) => {
 app.post("/api/webhook/sentry", async (req, res) => {
   console.log("🔔 Sentry Webhook Received! Auto-triggering RCA Pipeline...");
   
-  res.status(202).json({ message: "Incident response triggered" });
+  res.status(200).json({ message: "Incident response triggered" });
 
   // Broadcast the events to any browser that has the UI open!
   const broadcastEvent = (data: any) => {
