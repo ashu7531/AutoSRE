@@ -39,6 +39,21 @@ This repository is currently configured as a Proof of Concept (PoC) for reliable
    GEMINI_API_KEY=your_gemini_key
    GITHUB_TOKEN=your_github_pat_with_repo_access
    ```
-3. Start the backend: `npm run start`
+3. Start the server:
+```bash
+npm run dev
+```
+
+## 🚀 Live Demonstration (Auto-Triggered RCA)
+
+Instead of using mock scenarios, this project is wired into a live production environment!
+
+1. Open the **AutoSRE Dashboard** in your browser and leave the tab open:
+   [https://auto-sre-omega.vercel.app/](https://auto-sre-omega.vercel.app/)
+2. In a separate tab, trigger a real production crash by hitting this URL:
+   [https://cascade-backend-sgi5.onrender.com/sentry-debug](https://cascade-backend-sgi5.onrender.com/sentry-debug)
+3. Sentry will instantly catch the `ZeroDivisionError`, fire a webhook to AutoSRE, and the AutoSRE UI will magically start streaming the autonomous investigation in real-time!
+
+> **Note:** The AI Agent pulls live crash data from the Sentry API and live commit history from the `agentic-workflow-compiler` GitHub repository to determine root cause.
 4. Start the frontend: `cd frontend && npm run dev`
 5. Navigate to `http://localhost:5174` and trigger an incident.

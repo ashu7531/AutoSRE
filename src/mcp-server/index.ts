@@ -152,10 +152,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return { content: [{ type: "text", text: "Error: GITHUB_TOKEN not found in .env" }] };
       }
 
-      // We will default to looking at this current project's repo as a demo!
-      // In production, this would use request.params.arguments.repoName
+      // We will look at the actual repository that is crashing!
       const owner = "ashu7531"; 
-      const repo = "AutoSRE";
+      const repo = "agentic-workflow-compiler";
 
       // --- DEMO vs PRODUCTION LIMITATION ---
       // Currently, we only fetch the 'commit message'. 
