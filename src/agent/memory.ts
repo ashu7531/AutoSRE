@@ -22,7 +22,7 @@ async function getEmbedding(text: string): Promise<number[]> {
   } catch (error) {
     console.error("Embedding generation failed. Using mock vector for fallback.", error);
     // Fallback so the demo doesn't crash if the embedding API endpoint acts up
-    return Array(768).fill(Math.random());
+    return Array(3072).fill(Math.random());
   }
 }
 
@@ -36,7 +36,7 @@ export async function initMemoryDB() {
         id VARCHAR(50) PRIMARY KEY,
         issue TEXT NOT NULL,
         resolution TEXT NOT NULL,
-        embedding vector(768)
+        embedding vector(3072)
       )
     `);
     console.log("✅ Supabase pgvector Database initialized!");
