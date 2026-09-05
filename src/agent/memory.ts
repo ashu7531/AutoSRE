@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({ httpOptions: { apiVersion: 'v1alpha' } });
+const ai = new GoogleGenAI({});
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -15,7 +15,7 @@ const pool = new Pool({
 async function getEmbedding(text: string): Promise<number[]> {
   try {
     const response = await ai.models.embedContent({
-      model: "text-embedding-004",
+      model: "gemini-embedding-2",
       contents: text
     });
     return response.embeddings?.[0]?.values || [];
