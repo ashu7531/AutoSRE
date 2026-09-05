@@ -106,6 +106,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const owner = "ashu7531"; 
       const repo = "AutoSRE";
 
+      // --- DEMO vs PRODUCTION LIMITATION ---
+      // Currently, we only fetch the 'commit message'. 
+      // In a real production system, relying purely on developer messages is dangerous 
+      // because they can be inaccurate or misleading. 
+      // TO-DO for Production: Upgrade this fetch to hit the GitHub Compare API 
+      // to download the actual Code Diffs (the exact lines of code changed) 
+      // so the LLM can verify if the code changes actually caused the outage.
+      // -------------------------------------
       const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`, {
         headers: {
           "Authorization": `token ${token}`,
