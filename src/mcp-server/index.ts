@@ -103,8 +103,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       // We will default to looking at this current project's repo as a demo!
       // In production, this would use request.params.arguments.repoName
-      const owner = "ashutosh"; // Change this if your GitHub username is different
-      const repo = "auto-sre";
+      const owner = "ashu7531"; 
+      const repo = "AutoSRE";
 
       const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits?per_page=5`, {
         headers: {
