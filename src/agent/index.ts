@@ -47,6 +47,9 @@ export async function runAgent(sendEvent: (data: any) => void) {
   // -----------------------------------------------------------
 
   sendEvent({ type: "log", message: "🔄 Phase 2: Dispatching Parallel Collectors..." });
+  sendEvent({ type: "info", message: "↳ Executing tool: fetch_sentry_issues" });
+  sendEvent({ type: "info", message: "↳ Executing tool: get_recent_commits" });
+  sendEvent({ type: "info", message: "↳ Executing tool: get_dependency_health" });
 
   // 3. Parallel Evidence Collection (The core SRE pattern)
   // Fetch real logs from Sentry and commits from GitHub
