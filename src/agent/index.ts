@@ -49,6 +49,9 @@ export async function runAgent(sendEvent: (data: any) => void) {
   sendEvent({ type: "log", message: "🔄 Phase 2: Dispatching Parallel Collectors..." });
   sendEvent({ type: "info", message: "↳ Executing tool: fetch_sentry_issues" });
   sendEvent({ type: "info", message: "↳ Executing tool: get_recent_commits" });
+  sendEvent({ type: "info", message: "↳ Executing tool: query_datadog_apm_metrics" });
+  sendEvent({ type: "info", message: "↳ Executing tool: check_kubernetes_pod_health" });
+  sendEvent({ type: "info", message: "↳ Executing tool: fetch_pagerduty_oncall" });
   sendEvent({ type: "info", message: "↳ Executing tool: get_dependency_health" });
 
   // 3. Parallel Evidence Collection (The core SRE pattern)
