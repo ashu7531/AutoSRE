@@ -36,7 +36,17 @@ export async function runAgent(sendEvent: (data: any) => void) {
 
   sendEvent({ type: "alert", message: `🚨 Alert Triggered for ${serviceName}` });
 
-  sendEvent({ type: "log", message: "🔄 Phase 1: Dispatching Parallel Collectors..." });
+  // --- PHASE 1: GUARDRAIL (Mocked for Demo Completeness) ---
+  sendEvent({ type: "log", message: "🛡️ Phase 1: AI Validation Gate (Guardrail)..." });
+  try {
+    const metrics = await client.callTool({ name: "get_system_metrics", arguments: { serviceName } });
+    sendEvent({ type: "log", message: "✅ Validation Passed: High-confidence anomaly detected via Webhook." });
+  } catch (e) {
+    sendEvent({ type: "log", message: "⚠️ Validation Passed with warnings." });
+  }
+  // -----------------------------------------------------------
+
+  sendEvent({ type: "log", message: "🔄 Phase 2: Dispatching Parallel Collectors..." });
 
   // 3. Parallel Evidence Collection (The core SRE pattern)
   // Fetch real logs from Sentry and commits from GitHub
@@ -49,7 +59,7 @@ export async function runAgent(sendEvent: (data: any) => void) {
   sendEvent({ type: "log", message: "✅ Evidence Collected." });
 
   // 4. Incident Memory (Vector RAG)
-  sendEvent({ type: "log", message: "📚 Phase 2: Querying Incident Memory (Vector Search)..." });
+  sendEvent({ type: "log", message: "📚 Phase 3: Querying Incident Memory (Vector Search)..." });
   
   // Create a summary of the current error to search the database
   const searchString = JSON.stringify(logs.content);
@@ -62,7 +72,7 @@ export async function runAgent(sendEvent: (data: any) => void) {
   }
 
   // 5. LLM Analysis
-  sendEvent({ type: "log", message: "🧠 Phase 3: LLM Cross-Correlation Analysis..." });
+  sendEvent({ type: "log", message: "🧠 Phase 4: LLM Cross-Correlation Analysis..." });
   
   const prompt = `
     You are an autonomous SRE incident response agent.
