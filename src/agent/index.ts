@@ -96,8 +96,8 @@ export async function runAgent(sendEvent: (data: any) => void) {
     // For this demo, we auto-save the incident into the memory database.
     const newIncId = `INC-${Math.floor(100 + Math.random() * 900)}`;
     const issueSummary = JSON.stringify(logs.content);
-    addIncidentToMemory(newIncId, issueSummary, response.text || "Resolved.");
-    sendEvent({ type: "info", message: `💾 Saved current incident to RAG database as ${newIncId}.` });
+    // addIncidentToMemory(newIncId, issueSummary, response.text || "Resolved.");
+    // sendEvent({ type: "info", message: `💾 Saved current incident to RAG database as ${newIncId}.` });
     // ------------------------------
 
   } catch (error: any) {
