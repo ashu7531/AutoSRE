@@ -67,8 +67,16 @@ app.get("/api/trigger", async (req, res) => {
   }
 });
 
+let isInvestigating = false;
+
 // --- NEW: SENTRY WEBHOOK (Auto-Trigger) ---
 app.post("/api/webhook/sentry", async (req, res) => {
+  if (isInvestigating) {
+    console.log("Ignored overlapping webhook (Investigation already in progress)");
+    return res.status(200).json({ message: "Already investigating" });
+  }
+
+  isInvestigating = true;
   console.log("🔔 Sentry Webhook Received! Auto-triggering RCA Pipeline...");
   
   res.status(200).json({ message: "Incident response triggered" });
@@ -87,6 +95,8 @@ app.post("/api/webhook/sentry", async (req, res) => {
   } catch (err: any) {
     console.error("AutoSRE background task failed:", err);
     broadcastEvent({ type: "error", message: err.message || "An error occurred." });
+  } finally {
+    isInvestigating = false;
   }
 });
 
