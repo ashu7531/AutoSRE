@@ -17,6 +17,7 @@ export async function runAgent(sendEvent: (data: any) => void) {
   const transport = new StdioClientTransport({
     command: "npx",
     args: ["tsx", serverPath],
+    env: process.env // EXPLICITLY pass Render environment variables to the child process!
   });
 
   const client = new Client(
