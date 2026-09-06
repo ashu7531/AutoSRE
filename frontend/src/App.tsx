@@ -46,7 +46,7 @@ function App() {
       const data = JSON.parse(event.data);
       
       // Auto-clear the UI if a new webhook alert comes in
-      if (data.message === "🔔 Webhook Alert Received from Sentry!") {
+      if (data.type === 'alert' || data.message.includes("Webhook Alert")) {
         setLogs([]);
         setReport(null);
         setIsInvestigating(true);
@@ -55,7 +55,11 @@ function App() {
       if (data.type === 'report') {
         setReport(data.message);
       } else {
-        setLogs(prev => [...prev, { id: liveIdCounter++, type: data.type, message: data.message }]);
+        setLogs(prev => {
+          // Prevent duplicates if we just cleared the array
+          if (data.message.includes("Webhook Alert") && prev.length > 0) return prev;
+          return [...prev, { id: liveIdCounter++, type: data.type, message: data.message }];
+        });
       }
 
       if (data.type === 'done' || data.type === 'error') {
